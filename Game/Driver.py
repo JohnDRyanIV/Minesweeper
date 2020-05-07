@@ -31,6 +31,9 @@ def updateBoard(row, col):
     elif var_flag.get() == 1:  # Places or removes a flag on given location
         if board.hasFlag(row, col):
             board.removeFlag(row, col)
+        elif board.getNumFlags() == board.num_mines: # Every mine should be covered if this many flags have been placed,
+                                                     # therefore no more flags can be placed
+            pass
         else:
             board.addFlag(row, col)
     # board.showBoard()  # Debugging purposes, ensuring consistency between board lists and button displays
@@ -122,25 +125,27 @@ valid_input = False
 # Obtaining user input for attempt number
 while not valid_input:
     valid_attempts = ['1', '2', '3', '4', '5']
-    attempts = input("How many attempts would you like to have (1-5)?: ")
+    attempts = str(input("How many attempts would you like to have (1-5)?: "))
     if attempts in valid_attempts:
-        valid_attempt = True
+        valid_input = True
     else:
         print("Invalid input! Enter again.")
 
-if difficulty == 'easy' or 'e':
+if difficulty == 'easy' or difficulty == 'e':
     difficulty = 1
-elif difficulty == 'medium' or 'm':
+elif difficulty == 'medium' or difficulty == 'm':
     difficulty = 2
 else:
     difficulty = 3
 
-if size == 'small' or 's':
+if size == 'small' or size == 's':
     size = 1
-elif size == 'medium' or 'm':
+elif size == 'medium' or size == 'm':
     size = 2
 else:
     size = 3
+
+print("Difficulty: " + str(difficulty) + " | Size: " + str(size))
 
 attempts = int(attempts)
 
@@ -214,7 +219,7 @@ else:
             buttons[r][c].grid(row=r, column=c, sticky="ew")
 
 background_colors = ["sky blue", "deep sky blue", "dark khaki", "khaki", "red3", "red2"]
-text_colors = ["Black", "black", "azure", "azure", "white", "white"]
+text_colors = ["gray1", "gray1", "azure", "azure", "white", "white"]
 if color == 'blue':
     color = 0
 elif color == 'green':

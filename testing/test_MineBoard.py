@@ -104,6 +104,11 @@ class MyTestCase(unittest.TestCase):
     def test_uncover_all_mines(self):
         self.MineBoard.uncoverAllMines()
         self.assertTrue(self.MineBoard.hasMine(0, 0) and not self.MineBoard.isCovered(0, 0))
+        self.assertTrue(self.MineBoard.hasMine(2, 2) and not self.MineBoard.isCovered(2, 2))
+
+    def test_board_info(self):
+        self.assertEqual(self.MineBoard.boardInfo(), "Attempts remaining: 5 | Mines remaining: 10")
+
 
 if __name__ == '__main__':
     unittest.main()

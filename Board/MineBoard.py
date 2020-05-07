@@ -399,7 +399,8 @@ class MineBoard:
         file.close()
 
     # Loads stored save game from game.txt. Could not implement correctly before deadline
-    """def loadGame(self):
+    """
+    def loadGame(self):
         file = open("game.txt", "r")
         current = str(self.num_rows) + "x" + str(self.num_cols) + "\n"
 
@@ -415,11 +416,12 @@ class MineBoard:
                     # self.tile_content[r][c] = int(str(current_tile_content[c:c+1]))
                     # self.tile_state[r][c] = int(str(current_tile_state[c:c+1]))
         file.close()
-        """
+    """
 
 
 # Driver
-"""board = MineBoard(5, 5, 3, 1)
+"""
+board = MineBoard(5, 5, 3, 1)
 board.uncoverAllMines()
 board.uncoverBoard()
 board.showBoard()
@@ -429,7 +431,8 @@ while board.attempts > 0:
     col = int(input("Enter col: "))
     board.processMove(row, col)
 """
-"""while board.attempts > 0:
+"""
+while board.attempts > 0:
     for x in range(board.num_rows):
         print(board.tile_content[x])
     print("")
@@ -439,4 +442,5 @@ while board.attempts > 0:
     board.uncoverAllMines()
     for x in range(board.num_rows):
         print(board.tile_state[x])
-    board.attempts = 0"""
+    board.attempts = 0
+"""

@@ -69,7 +69,41 @@ class MyTestCase(unittest.TestCase):
         self.MineBoard.subAttempt()
         self.assertEqual(current-1, self.MineBoard.getAttemptsRemaining())
 
-    def test_get_squares_uncovered
+    def test_get_squares_uncovered(self):
+        self.MineBoard.uncoverExact(5, 5)
+        self.assertEqual(self.MineBoard.getSquaresUncovered(), 1)
+        self.MineBoard.uncoverExact(6, 6)
+        self.assertEqual(self.MineBoard.getSquaresUncovered(), 2)
+
+    def test_get_num_flags_placed(self):
+        self.assertEqual(self.MineBoard.getNumFlags(), 0)
+        self.MineBoard.addFlag(5, 5)
+        self.assertEqual(self.MineBoard.getNumFlags(), 1)
+
+    def test_get_current_shown_text(self):
+        self.MineBoard.uncoverBoard()
+        self.assertEqual(self.MineBoard.getCurrentShownText(1, 1), "8")
+        self.assertEqual(self.MineBoard.getCurrentShownText(0, 0), "*")
+        self.assertEqual(self.MineBoard.getCurrentShownText(3, 3), "1")
+        self.assertEqual(self.MineBoard.getCurrentShownText(4, 4), " ")
+
+    def test_has_number(self):
+        self.assertFalse(self.MineBoard.hasNumber(0, 0))
+        self.assertTrue(self.MineBoard.hasNumber(1, 1))
+        self.assertFalse(self.MineBoard.hasNumber(4, 4))
+
+    def test_process_move(self):
+        self.MineBoard.processMove(1, 1)
+        self.assertFalse(self.MineBoard.isCovered(1, 1))
+        self.assertTrue(self.MineBoard.isCovered(0, 1))
+        self.MineBoard.processMove(4, 4)
+        self.assertFalse(self.MineBoard.isCovered(5, 5))
+
+    # Process blank tested within process move
+
+    def test_uncover_all_mines(self):
+        self.MineBoard.uncoverAllMines()
+        self.assertTrue(self.MineBoard.hasMine(0, 0) and not self.MineBoard.isCovered(0, 0))
 
 if __name__ == '__main__':
     unittest.main()

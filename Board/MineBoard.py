@@ -22,6 +22,19 @@ class MineBoard:
             print(self.tile_content[x])
         print(self.tile_state)"""
 
+    def __init__(self):
+        self.num_rows = 10
+        self.num_cols = 8
+        self.num_tiles = 8 * 10
+        self.difficulty = 1
+        self.num_mines = 10
+        self.game_state = True
+        self.attempts = 5
+        self.tile_content = [[]]
+        self.tile_state = [[]]
+
+        self.initializeBoard()
+
     """///////////////////
     ////// Functions /////
     ///////////////////"""
@@ -49,7 +62,7 @@ class MineBoard:
             if c < 0 or r < 0 or c == self.num_cols or r == self.num_rows:
                 return False
             return True
-        except(IndexError):
+        except IndexError:
             return False
 
     # Returns true if the tile contains a mine, false otherwise
@@ -111,10 +124,6 @@ class MineBoard:
             return self.num_tiles / 8
         else:  # Hard
             return self.num_tiles / 6
-
-    # Clears lists making up board and sets attempts_remaining to default
-    def clearBoard(self):
-        pass
 
     # Resets board back to original state with mines placed identically
     def resetGame(self):
@@ -195,11 +204,25 @@ class MineBoard:
 
     # Returns true if any tiles nearby are covered, false otherwise
     def areNearbyCovered(self, r, c):
-        pass
+        row = r - 1
+        while row < (r + 2):
+            col = c - 1
+            while col < (c + 2):
+                if self.isValidTile(row, col):
+                    if self.tile_state[row][col] == 0:
+                        return True
+        return False
 
     # Returns true if any tiles naerby are empty
     def areNearbyEmptyAndUncovered(self, r, c):
-        pass
+        row = r - 1
+        while row < (r + 2):
+            col = c - 1
+            while col < (c + 2):
+                if self.isValidTile(row, col):
+                    if not self.hasFlag(row, col) and not self.isCovered(row, col) and self.isEmpty(row, col):
+                        return True
+        return False
 
     # Returns true if tile at row and column contains a number
     def hasNumber(self, r, c):
@@ -404,8 +427,10 @@ class MineBoard:
                 current_tile_content = file.readline(r+1)
                 current_tile_state = file.readline(r+2+self.num_rows)
                 for c in range(self.num_cols - 1):
-                    self.tile_content[r][c] = int(str(current_tile_content[c:c+1]))
-                    self.tile_state[r][c] = int(str(current_tile_state[c:c+1]))
+                    print(current_tile_content)
+                    print(current_tile_state)
+                    # self.tile_content[r][c] = int(str(current_tile_content[c:c+1]))
+                    # self.tile_state[r][c] = int(str(current_tile_state[c:c+1]))
         file.close()
 
 

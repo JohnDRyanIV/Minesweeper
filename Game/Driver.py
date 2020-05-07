@@ -37,14 +37,18 @@ def updateBoard(row, col):
         else:
             board.addFlag(row, col)
     # board.showBoard()  # Debugging purposes, ensuring consistency between board lists and button displays
+    # Updating button states to reflect board and ensuring everything is properly colored
     for r in range(board.num_rows):
         for c in range(board.num_cols):
             # Decide color things up here
             if board.tile_state[r][c] == 1:
                 buttons[r][c]["state"] = ["disabled"]
-                buttons[r][c].config(background=background_colors[color + 1], text=text_colors[color])
+                if board.tile_content[r][c] == 9:
+                    buttons[r][c].config(background="red")
+                else:
+                    buttons[r][c].config(background=background_colors[color + 1], foreground=text_colors[color])
             else:
-                buttons[r][c].config(background=background_colors[color], text=text_colors[color])
+                buttons[r][c].config(background=background_colors[color], foreground=text_colors[color])
             buttons[r][c].config(text=board.getCurrentShownText(r, c))
 
     if board.attempts < 1:  # If all attempts have been used up without uncovering all mines, show lose screen
@@ -75,7 +79,7 @@ def loadGame():
                     buttons[r][c]["state"] = ["disabled"]
                     buttons[r][c].config(background=background_colors[color + 1], text=text_colors[color])
                 elif board.tile_state[r][c] == 0:
-                    buttons[r][c]["state"] = ["enabled"]
+                    buttons[r][c]["state"] = ["active"]
                     buttons[r][c].config(background=background_colors[color], text=text_colors[color])
                 else:
                     buttons[r][c].config(background=background_colors[color], text=text_colors[color])
@@ -88,11 +92,8 @@ Easy: 10 rows, 6 columns
 Medium: 15 rows, 8 columns
 Hard: 20 rows, 10 columns
 """
-"""
-Easy: 10 rows, 6 columns
-Medium: 15 rows, 8 columns
-Hard: 20 rows, 10 columns
-"""
+
+# Driver
 
 m = tk.Tk()
 text = tk.Text(m)
@@ -248,15 +249,12 @@ for r in range(board.num_rows):
         buttons[r][c].config(background=background_colors[color])
 
 var_mines = tk.StringVar()
-var_mines.set(str(board.getMinesPlaced()))
+var_mines.set("Num Mines: " + str(board.getMinesPlaced()))
 mines_remaining = tk.Label(m, textvariable=var_mines).grid(row=board.num_rows - 1, column=board.num_cols)
 var_flag = tk.IntVar()
 place_flags = tk.Checkbutton(m, text="Place flags", variable=var_flag).grid(row=board.num_rows, column=board.num_cols)
 btn_save = tk.Button(m, text="Save Game", command=lambda: saveGame()).grid(row=board.num_rows+1,column=board.num_cols+1)
 btn_load = tk.Button(m, text="Load Game", command=lambda: loadGame()).grid(row=board.num_rows-1,column=board.num_cols+1)
-# ADD BTN_SAVE
-# ADD BTN_LOAD
-
 
 m.title("Game")
 

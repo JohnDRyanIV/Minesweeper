@@ -340,7 +340,8 @@ class MineBoard:
             for c in range(self.num_cols):
                 self.tile_state[r][c] = 1
 
-    # Outputs a representation of the board to the console, pretty much used only while debugging as the tkinter implementation was much better.
+    # Outputs a representation of the board to the console, pretty much used only while debugging as the tkinter
+    # implemntation works much more efficiently and comprehensively for testing.
     def showBoard(self):
         current_state = 0
         current_out = " "

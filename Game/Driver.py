@@ -28,7 +28,10 @@ def updateBoard(row, col):
     if board.isCovered(row, col) and var_flag.get() == 0:
         board.processMove(row, col)
     elif var_flag.get() == 1:
-        board.addFlag(row, col)
+        if board.hasFlag(row, col):
+            board.removeFlag(row, col)
+        else:
+            board.addFlag(row, col)
     # board.showBoard()
     for r in range(board.num_rows):
         for c in range(board.num_cols):
@@ -61,9 +64,9 @@ Hard: 20 rows, 10 columns
 """
 
 m = tk.Tk()
-"""text = tk.Text(m)
+text = tk.Text(m)
 myFont = font.Font(family="Courier New", size=12)
-text.configure(font=myFont)"""
+text.configure(font=myFont)
 
 difficulty = int(input("Would you like to play at difficulty level 1, 2, or 3?: "))
 buttons = [[]]

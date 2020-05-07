@@ -340,13 +340,16 @@ class MineBoard:
             for c in range(self.num_cols):
                 self.tile_state[r][c] = 1
 
+    def boardInfo(self):
+        return "Attempts remaining: " + str(self.attempts) + " | Mines remaining: " + str(
+            self.num_mines - self.getNumFlags())
     # Outputs a representation of the board to the console, pretty much used only while debugging as the tkinter
     # implemntation works much more efficiently and comprehensively for testing.
     def showBoard(self):
         current_state = 0
         current_out = " "
         current_content = 0
-        print("Attempts remaining: " + str(self.attempts) + " | Mines remaining: " + str(self.num_mines - self.getNumFlags()))
+        self.boardInfo();
         print("  ", end="")
         for i in range(self.num_cols):
             print(str(i+1), end=" ")

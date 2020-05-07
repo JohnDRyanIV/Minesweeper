@@ -5,7 +5,7 @@ from tkinter import font
 
 # Calculates what tiles the move uncovers and adjusts buttons accordingly
 def updateBoard(row, col):
-
+    # Disables all buttons on the board and brings up a window informing you that you've lost
     def showLose():
         board.uncoverAllMines()
         for r in range(board.num_rows):
@@ -16,6 +16,7 @@ def updateBoard(row, col):
         lose_text = tk.Label(lose, text="You lost! Better luck next time!").grid(row=0, column=0)
         lose.mainloop()
 
+    # Disables all buttons on the board and brings up a window informing you that you've won
     def showWin():
         for r in range(board.num_rows):
             for c in range(board.num_cols):
@@ -26,37 +27,48 @@ def updateBoard(row, col):
         win.mainloop()
 
     if board.isCovered(row, col) and var_flag.get() == 0:
-        board.processMove(row, col)
-    elif var_flag.get() == 1:
+        board.processMove(row, col)  # Processes the move on that location of the board
+    elif var_flag.get() == 1:  # Places or removes a flag on given location
         if board.hasFlag(row, col):
             board.removeFlag(row, col)
         else:
             board.addFlag(row, col)
-    # board.showBoard()
+    # board.showBoard()  # Debugging purposes, ensuring consistency between board lists and button displays
     for r in range(board.num_rows):
         for c in range(board.num_cols):
             # Decide color things up here
             if board.tile_state[r][c] == 1:
                 buttons[r][c]["state"] = ["disabled"]
-                buttons[r][c].config(background=background_colors[color+1], text=text_colors[color])
+                buttons[r][c].config(background=background_colors[color + 1], text=text_colors[color])
             else:
                 buttons[r][c].config(background=background_colors[color], text=text_colors[color])
             buttons[r][c].config(text=board.getCurrentShownText(r, c))
 
-    if board.attempts < 1:
+    if board.attempts < 1:  # If all attempts have been used up without uncovering all mines, show lose screen
         showLose()
     elif board.getSquaresUncovered() - board.getMinesUncovered() + board.getMinesPlaced() == board.num_tiles:
+        # If all spaces not containing mines have been uncovered without using up all attempts, show win screen
         showWin()
-    print(str(board.attempts))
+
+    print(str(board.boardInfo()))
     # var_mines.set("Mines remaining: " + str(board.num_mines - board.getMinesUncovered - board.getNumFlags()))
+
 
 # Saves the board layout to a file
 def saveGame():
     pass
 
+
 # Loads the board layout from a file
 def loadGame():
     pass
+
+
+"""
+Easy: 10 rows, 6 columns
+Medium: 15 rows, 8 columns
+Hard: 20 rows, 10 columns
+"""
 """
 Easy: 10 rows, 6 columns
 Medium: 15 rows, 8 columns
@@ -68,12 +80,76 @@ text = tk.Text(m)
 myFont = font.Font(family="Courier New", size=12)
 text.configure(font=myFont)
 
-difficulty = int(input("Would you like to play at difficulty level 1, 2, or 3?: "))
 buttons = [[]]
 
+valid_input = False
+
+color = ''
+difficulty = ''
+size = ''
+attempts = ''
+
+# Obtaining user input for color scheme
+while not valid_input:
+    valid_colors = ["blue", "green", "brown"]
+    color = input("What color do you want (blue, green, brown)?: ").lower()
+    if color in valid_colors:
+        valid_input = True
+    else:
+        print("Invalid input! Enter again.")
+valid_input = False
+
+# Obtaining user input for difficulty
+while not valid_input:
+    valid_difficulty = ["easy", "medium", "hard", 'e', 'm', 'h']
+    difficulty = input("What difficulty would you like to play at (easy, medium, hard)?: ").lower()
+    if difficulty in valid_difficulty:
+        valid_input = True
+    else:
+        print("Invalid input! Enter again.")
+valid_input = False
+
+# Obtaining user input for board size
+while not valid_input:
+    valid_size = ['small', 'medium', 'large', 's','m','l']
+    size = input("What size would you like the board to be (small, medium, large)?: ").lower()
+    if size in valid_size:
+        valid_input = True
+    else:
+        print("Invalid input! Enter again.")
+valid_input = False
+
+# Obtaining user input for attempt number
+while not valid_input:
+    valid_attempts = ['1', '2', '3', '4', '5']
+    attempts = input("How many attempts would you like to have (1-5)?: ")
+    if attempts in valid_attempts:
+        valid_attempt = True
+    else:
+        print("Invalid input! Enter again.")
+
+if difficulty == 'easy' or 'e':
+    difficulty = 1
+elif difficulty == 'medium' or 'm':
+    difficulty = 2
+else:
+    difficulty = 3
+
+if size == 'small' or 's':
+    size = 1
+elif size == 'medium' or 'm':
+    size = 2
+else:
+    size = 3
+
+attempts = int(attempts)
+
+
+    
+
 # Initializes buttons array for easy game
-if difficulty == 1:
-    board = mb.MineBoard(10, 6, 1, 3)
+if size == 1:
+    board = mb.MineBoard(10, 6, difficulty, attempts)
     buttons = [[tk.Button(m, text=" ", command=lambda: updateBoard(0, 0)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 1)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 2)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 3)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 4)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 5))],
                [tk.Button(m, text=" ", command=lambda: updateBoard(1, 0)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 1)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 2)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 3)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 4)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 5))],
                [tk.Button(m, text=" ", command=lambda: updateBoard(2, 0)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 1)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 2)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 3)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 4)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 5))],
@@ -89,8 +165,8 @@ if difficulty == 1:
             buttons[r][c].grid(row=r, column=c, sticky="ew")
 
 # Initializes buttons array for medium difficulty game
-elif difficulty == 2:
-    board = mb.MineBoard(15, 8, 2, 3)
+elif size == 2:
+    board = mb.MineBoard(15, 8, difficulty, attempts)
     buttons = [[tk.Button(m, text=" ", command=lambda: updateBoard(0, 0)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 1)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 2)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 3)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 4)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 5)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 6)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 7))],
                [tk.Button(m, text=" ", command=lambda: updateBoard(1, 0)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 1)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 2)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 3)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 4)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 5)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 6)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 7))],
                [tk.Button(m, text=" ", command=lambda: updateBoard(2, 0)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 1)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 2)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 3)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 4)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 5)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 6)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 7))],
@@ -112,7 +188,7 @@ elif difficulty == 2:
 
 # Initializes buttons array for hard game.
 else:
-    board = mb.MineBoard(20, 10, 1, 3)
+    board = mb.MineBoard(20, 10, difficulty, attempts)
     buttons = [[tk.Button(m, text=" ", command=lambda: updateBoard(0, 0)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 1)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 2)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 3)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 4)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 5)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 6)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 7)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 8)), tk.Button(m, text=" ", command=lambda: updateBoard(0, 9))],
                [tk.Button(m, text=" ", command=lambda: updateBoard(1, 0)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 1)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 2)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 3)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 4)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 5)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 6)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 7)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 8)), tk.Button(m, text=" ", command=lambda: updateBoard(1, 9))],
                [tk.Button(m, text=" ", command=lambda: updateBoard(2, 0)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 1)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 2)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 3)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 4)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 5)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 6)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 7)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 8)), tk.Button(m, text=" ", command=lambda: updateBoard(2, 9))],
@@ -136,13 +212,15 @@ else:
     for r in range(board.num_rows):
         for c in range(board.num_cols):
             buttons[r][c].grid(row=r, column=c, sticky="ew")
+
 background_colors = ["sky blue", "deep sky blue", "dark khaki", "khaki", "red3", "red2"]
 text_colors = ["Black", "black", "azure", "azure", "white", "white"]
-color = int(input("Choose color scheme: Blue (1), khaki (2), or red (3): "))
-if color == 1:
+if color == 'blue':
     color = 0
-elif color == 3:
-    color = 4
+elif color == 'green':
+    color = 2
+else:
+    color = 3
 
 for r in range(board.num_rows):
     for c in range(board.num_cols):

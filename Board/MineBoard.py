@@ -343,6 +343,7 @@ class MineBoard:
     def boardInfo(self):
         return "Attempts remaining: " + str(self.attempts) + " | Mines remaining: " + str(
             self.num_mines - self.getNumFlags())
+
     # Outputs a representation of the board to the console, pretty much used only while debugging as the tkinter
     # implemntation works much more efficiently and comprehensively for testing.
     def showBoard(self):
@@ -373,6 +374,39 @@ class MineBoard:
                 print(current_out, end="|")
             print("")
 
+    # Saves game to game.txt
+    def saveGame(self):
+        file = open("game.txt", "w")
+        file.write(str(self.num_rows) + "x" + str(self.num_cols) + "\n")
+
+        for r in range(self.num_rows):
+            for c in range(self.num_cols):
+                file.write(str(self.tile_content[r][c]))  # Writing the content to the file
+            file.write("\n")
+        file.write("\n")
+
+        for r in range(self.num_rows):
+            for c in range(self.num_cols):
+                file.write(str(self.tile_state[r][c]))  # Writing the state to the file
+            file.write("\n")
+
+        file.close()
+
+    # Loads stored save game from game.txt
+    def loadGame(self):
+        file = open("game.txt", "r")
+        current = str(self.num_rows) + "x" + str(self.num_cols) + "\n"
+
+        if current != file.readline():
+            return False
+        else:
+            for r in range(self.num_rows):
+                current_tile_content = file.readline(r+1)
+                current_tile_state = file.readline(r+2+self.num_rows)
+                for c in range(self.num_cols - 1):
+                    self.tile_content[r][c] = int(str(current_tile_content[c:c+1]))
+                    self.tile_state[r][c] = int(str(current_tile_state[c:c+1]))
+        file.close()
 
 
 # Driver

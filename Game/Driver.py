@@ -59,12 +59,28 @@ def updateBoard(row, col):
 
 # Saves the board layout to a file
 def saveGame():
-    pass
+    board.saveGame()
 
 
 # Loads the board layout from a file
 def loadGame():
-    pass
+    # Method returns false if board incompatible, loads the board successfully otherwise.
+    if board.loadGame() == False:
+        print("You can't load a game with a different number of rows and columns to the current one!")
+    else:
+        for r in range(board.num_rows):
+            for c in range(board.num_cols):
+                # Decide color things up here
+                if board.tile_state[r][c] == 1:
+                    buttons[r][c]["state"] = ["disabled"]
+                    buttons[r][c].config(background=background_colors[color + 1], text=text_colors[color])
+                elif board.tile_state[r][c] == 0:
+                    buttons[r][c]["state"] = ["enabled"]
+                    buttons[r][c].config(background=background_colors[color], text=text_colors[color])
+                else:
+                    buttons[r][c].config(background=background_colors[color], text=text_colors[color])
+                buttons[r][c].config(text=board.getCurrentShownText(r, c))
+
 
 
 """
@@ -236,11 +252,14 @@ var_mines.set(str(board.getMinesPlaced()))
 mines_remaining = tk.Label(m, textvariable=var_mines).grid(row=board.num_rows - 1, column=board.num_cols)
 var_flag = tk.IntVar()
 place_flags = tk.Checkbutton(m, text="Place flags", variable=var_flag).grid(row=board.num_rows, column=board.num_cols)
-
+btn_save = tk.Button(m, text="Save Game", command=lambda: saveGame()).grid(row=board.num_rows+1,column=board.num_cols+1)
+btn_load = tk.Button(m, text="Load Game", command=lambda: loadGame()).grid(row=board.num_rows-1,column=board.num_cols+1)
 # ADD BTN_SAVE
 # ADD BTN_LOAD
 
 
 m.title("Game")
+
+board.saveGame()
 
 m.mainloop()

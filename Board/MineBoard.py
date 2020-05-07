@@ -4,36 +4,22 @@ import random
 
 
 class MineBoard:
-    def __init__(self, rows, col, difficulty, attempts):
+    def __init__(self, rows, col, difficulty, attempts, test=False):
         self.num_rows = rows
         self.num_cols = col
         self.num_tiles = rows * col
         self.difficulty = difficulty
-        self.num_mines = int(self.setMineNum())
-        self.game_state = True
         self.attempts = attempts
         self.tile_content = [[]]
         self.tile_state = [[]]
-
-        self.initializeBoard()
-        self.placeMines()
-        """print("")
-        for x in range(self.num_rows):
-            print(self.tile_content[x])
-        print(self.tile_state)"""
-
-    def __init__(self):
-        self.num_rows = 10
-        self.num_cols = 8
-        self.num_tiles = 8 * 10
-        self.difficulty = 1
-        self.num_mines = 10
         self.game_state = True
-        self.attempts = 5
-        self.tile_content = [[]]
-        self.tile_state = [[]]
-
         self.initializeBoard()
+
+        if not test:
+            self.num_mines = int(self.setMineNum())
+            self.placeMines()
+        else:
+            self.num_mines = 10
 
     """///////////////////
     ////// Functions /////
@@ -41,8 +27,8 @@ class MineBoard:
 
     # Sets lists representing rows and columns to default states
     def initializeBoard(self):
-        self.tile_content = [[0]*self.num_cols for _ in range(self.num_rows)]
-        self.tile_state = [[0]*self.num_cols for _ in range(self.num_rows)]
+        self.tile_content = [[0] * self.num_cols for _ in range(self.num_rows)]
+        self.tile_state = [[0] * self.num_cols for _ in range(self.num_rows)]
 
     # Places mines in random locations on the minesweeper board
     def placeMines(self):
@@ -56,9 +42,9 @@ class MineBoard:
                 mines_placed = mines_placed + 1
 
     # Returns true if the tile is in a valid location, false otherwise:
-    def isValidTile(self, r, c, flag = False):
+    def isValidTile(self, r, c, flag=False):
         try:
-            self.tile_content[r][c] = self.tile_content[r][c] # Will throw an IndexError if row and column are invalid
+            self.tile_content[r][c] = self.tile_content[r][c]  # Will throw an IndexError if row and column are invalid
             if c < 0 or r < 0 or c == self.num_cols or r == self.num_rows:
                 return False
             return True
@@ -92,11 +78,7 @@ class MineBoard:
             while col < (c + 2):
                 if self.isValidTile(row, col):
                     if not self.hasMine(row, col):
-                        # print(str(self.tile_content[row]) + " " + str(row) + " " + str(col))  # Debugging
                         self.tile_content[row][col] += 1
-                        # print(str(self.tile_content[row]) + " " + str(row) + " " + str(col))  # Debugging
-                        # This isn't working correctly, it's incrementing values on the other side of the board
-                    # print("")  # Debugging
                 col += 1
             row += 1
 
@@ -211,7 +193,10 @@ class MineBoard:
                 if self.isValidTile(row, col):
                     if self.tile_state[row][col] == 0:
                         return True
+                col += 1
+            row += 1
         return False
+        pass
 
     # Returns true if any tiles naerby are empty
     def areNearbyEmptyAndUncovered(self, r, c):
@@ -222,6 +207,8 @@ class MineBoard:
                 if self.isValidTile(row, col):
                     if not self.hasFlag(row, col) and not self.isCovered(row, col) and self.isEmpty(row, col):
                         return True
+                col += 1
+            row += 1
         return False
 
     # Returns true if tile at row and column contains a number
@@ -239,8 +226,8 @@ class MineBoard:
     # Processes result of user selecting tile at r, c
     def processMove(self, r, c):
         if not self.isCovered(r, c):
-            print("The tile at location (" + str(r+1) + ", " + str(c+1) + ") is already uncovered.")
-        elif self.isEmpty(r, c): # Empty square
+            print("The tile at location (" + str(r + 1) + ", " + str(c + 1) + ") is already uncovered.")
+        elif self.isEmpty(r, c):  # Empty square
             self.processBlank(r, c)
         elif self.hasMine(r, c):
             self.subAttempt()
@@ -248,7 +235,7 @@ class MineBoard:
 
     # Processes what to do if a blank tile is uncovered
     def processBlank(self, r, c):
-        to_uncover = [[0]*self.num_cols for _ in range(self.num_rows)]  # Stores locations that need to be uncovered
+        to_uncover = [[0] * self.num_cols for _ in range(self.num_rows)]  # Stores locations that need to be uncovered
         past_index = [0] * self.num_tiles * 2  # Stores what row/col tiles have been parsed through
         more_blank = True  # Remains true while there's still more blank tiles to uncover
         can_add_blank = True  # Remains true while there are blank tiles adjacent to current coordinates
@@ -263,24 +250,24 @@ class MineBoard:
                 begin_index = index
 
                 if self.isValidTile(row - 1, col):
-                    if self.isEmpty(row-1, col) and to_uncover[row-1][col] != 1:
-                        to_uncover[row-1][col] = 1
+                    if self.isEmpty(row - 1, col) and to_uncover[row - 1][col] != 1:
+                        to_uncover[row - 1][col] = 1
                         past_index[index] = row
                         index += 1
                         past_index[index] = col
                         index += 1
                         row -= 1
-                if self.isValidTile(row, col-1):
-                    if self.isEmpty(row, col-1) and to_uncover[row][col-1] != 1:
-                        to_uncover[row][col-1] = 1
+                if self.isValidTile(row, col - 1):
+                    if self.isEmpty(row, col - 1) and to_uncover[row][col - 1] != 1:
+                        to_uncover[row][col - 1] = 1
                         past_index[index] = row
                         index += 1
                         past_index[index] = col
                         index += 1
                         col -= 1
-                if self.isValidTile(row+1, col):
-                    if self.isEmpty(row+1, col) and to_uncover[row+1][col] != 1:
-                        to_uncover[row+1][col] = 1
+                if self.isValidTile(row + 1, col):
+                    if self.isEmpty(row + 1, col) and to_uncover[row + 1][col] != 1:
+                        to_uncover[row + 1][col] = 1
                         past_index[index] = row
                         index += 1
                         past_index[index] = col
@@ -317,7 +304,7 @@ class MineBoard:
             for y in range(self.num_cols):
                 if to_uncover[x][y] == 1 and self.isEmpty(x, y):
                     self.uncoverNearby(x, y)
-                elif to_uncover[x][y] == 1:
+                if to_uncover[x][y] == 1:
                     self.uncoverExact(x, y)
 
         # Logic for uncovering tiles with numbers that are adjacent to empty tiles that have been uncovered
@@ -330,7 +317,7 @@ class MineBoard:
         for x in range(self.num_rows):
             for y in range(self.num_cols):
                 if to_uncover[x][y] == 1 and self.isEmpty(x, y):
-                    self.uncoverNearby(x, y)
+                    self.uncoverExact(x, y)
 
         # print(past_index)  # Debug
 
@@ -348,16 +335,12 @@ class MineBoard:
             col = c - 1
             while col < (c + 2):
                 if self.isValidTile(row, col):
-                    if (self.isCovered(row, col) or self.hasFlag(row, col) and (not col == c or not row == r)):
-                        # print(str(self.tile_content[row]) + " " + str(row) + " " + str(col))  # Debugging
-                        self.tile_state[row][col] = 1
-                        # print(str(self.tile_content[row]) + " " + str(row) + " " + str(col))  # Debugging
-                        # This isn't working correctly, it's incrementing values on the other side of the board
-                    # print("")  # Debugging
+                    if self.isCovered(row, col) or self.hasFlag(row, col) and (not col == c or not row == r):
+                         self.tile_state[row][col] = 1
+
                 col += 1
             row += 1
 
-    # Uncovers every tile on the board
     def uncoverBoard(self):
         for r in range(self.num_rows):
             for c in range(self.num_cols):
@@ -376,10 +359,10 @@ class MineBoard:
         self.boardInfo();
         print("  ", end="")
         for i in range(self.num_cols):
-            print(str(i+1), end=" ")
+            print(str(i + 1), end=" ")
         print("")
         for r in range(self.num_rows):
-            print(str(r+1) + "|", end="")
+            print(str(r + 1) + "|", end="")
             for c in range(self.num_cols):
                 current_state = self.tile_state[r][c]
                 current_content = self.tile_content[r][c]
@@ -415,8 +398,8 @@ class MineBoard:
 
         file.close()
 
-    # Loads stored save game from game.txt
-    def loadGame(self):
+    # Loads stored save game from game.txt. Could not implement correctly before deadline
+    """def loadGame(self):
         file = open("game.txt", "r")
         current = str(self.num_rows) + "x" + str(self.num_cols) + "\n"
 
@@ -432,6 +415,7 @@ class MineBoard:
                     # self.tile_content[r][c] = int(str(current_tile_content[c:c+1]))
                     # self.tile_state[r][c] = int(str(current_tile_state[c:c+1]))
         file.close()
+        """
 
 
 # Driver

@@ -1,6 +1,5 @@
 from Board import MineBoard as mb
 import tkinter as tk
-from tkinter import font
 
 
 # Calculates what tiles the move uncovers and adjusts buttons accordingly
@@ -46,9 +45,9 @@ def updateBoard(row, col):
                 if board.tile_content[r][c] == 9:
                     buttons[r][c].config(background="red")
                 else:
-                    buttons[r][c].config(background=background_colors[color + 1], foreground=text_colors[color])
+                    buttons[r][c].config(background=background_colors[color + 1])
             else:
-                buttons[r][c].config(background=background_colors[color], foreground=text_colors[color])
+                buttons[r][c].config(background=background_colors[color])
             buttons[r][c].config(text=board.getCurrentShownText(r, c))
 
     if board.attempts < 1:  # If all attempts have been used up without uncovering all mines, show lose screen
@@ -66,7 +65,8 @@ def saveGame():
     board.saveGame()
 
 
-# Loads the board layout from a file
+# Loads the board layout from a file. Could not implement before deadline
+"""
 def loadGame():
     # Method returns false if board incompatible, loads the board successfully otherwise.
     if board.loadGame() == False:
@@ -77,13 +77,14 @@ def loadGame():
                 # Decide color things up here
                 if board.tile_state[r][c] == 1:
                     buttons[r][c]["state"] = ["disabled"]
-                    buttons[r][c].config(background=background_colors[color + 1], text=text_colors[color])
+                    buttons[r][c].config(background=background_colors[color + 1])
                 elif board.tile_state[r][c] == 0:
                     buttons[r][c]["state"] = ["active"]
-                    buttons[r][c].config(background=background_colors[color], text=text_colors[color])
+                    buttons[r][c].config(background=background_colors[color])
                 else:
-                    buttons[r][c].config(background=background_colors[color], text=text_colors[color])
+                    buttons[r][c].config(background=background_colors[color])
                 buttons[r][c].config(text=board.getCurrentShownText(r, c))
+"""
 
 
 
@@ -96,9 +97,6 @@ Hard: 20 rows, 10 columns
 # Driver
 
 m = tk.Tk()
-text = tk.Text(m)
-myFont = font.Font(family="Courier New", size=12)
-text.configure(font=myFont)
 
 buttons = [[]]
 
@@ -111,8 +109,8 @@ attempts = ''
 
 # Obtaining user input for color scheme
 while not valid_input:
-    valid_colors = ["blue", "green", "brown"]
-    color = input("What color do you want (blue, green, brown)?: ").lower()
+    valid_colors = ["blue", "brown", "green"]
+    color = input("What color do you want (blue, brown, green)?: ").lower()
     if color in valid_colors:
         valid_input = True
     else:
@@ -235,14 +233,13 @@ else:
         for c in range(board.num_cols):
             buttons[r][c].grid(row=r, column=c, sticky="ew")
 
-background_colors = ["sky blue", "deep sky blue", "dark khaki", "khaki", "red3", "red2"]
-text_colors = ["gray1", "gray1", "azure", "azure", "white", "white"]
+background_colors = ["sky blue", "deep sky blue", "AntiqueWhite1", "AntiqueWhite2", "SpringGreen2", "SpringGreen3"]
 if color == 'blue':
     color = 0
-elif color == 'green':
+elif color == 'brown':
     color = 2
 else:
-    color = 3
+    color = 4
 
 for r in range(board.num_rows):
     for c in range(board.num_cols):
@@ -253,8 +250,8 @@ var_mines.set("Num Mines: " + str(board.getMinesPlaced()))
 mines_remaining = tk.Label(m, textvariable=var_mines).grid(row=board.num_rows - 1, column=board.num_cols)
 var_flag = tk.IntVar()
 place_flags = tk.Checkbutton(m, text="Place flags", variable=var_flag).grid(row=board.num_rows, column=board.num_cols)
-btn_save = tk.Button(m, text="Save Game", command=lambda: saveGame()).grid(row=board.num_rows+1,column=board.num_cols+1)
-btn_load = tk.Button(m, text="Load Game", command=lambda: loadGame()).grid(row=board.num_rows-1,column=board.num_cols+1)
+btn_save = tk.Button(m, text="Save Game", command=lambda: saveGame()).grid(row=board.num_rows+1,column=board.num_cols)
+# btn_load = tk.Button(m, text="Load Game", command=lambda: loadGame()).grid(row=board.num_rows-1,column=board.num_cols+1)
 
 m.title("Game")
 

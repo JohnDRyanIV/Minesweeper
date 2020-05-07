@@ -4,7 +4,7 @@ from Board import MineBoard as mb
 
 class MyTestCase(unittest.TestCase):
     def setUp(self):
-        self.MineBoard = mb.MineBoard()  # Creates 10x8 minesweeper board
+        self.MineBoard = mb.MineBoard(10, 8, 1, 5, True)  # Creates 10x8 minesweeper board
         # Manually adding mines to ensure that future tests remain accurate
         self.MineBoard.addMine(0, 0)
         self.MineBoard.addMine(0, 1)
@@ -16,6 +16,9 @@ class MyTestCase(unittest.TestCase):
         self.MineBoard.addMine(2, 2)
         self.MineBoard.addMine(5, 6)
         self.MineBoard.addMine(8, 4)
+
+    def tearDown(self):
+        del self.MineBoard
 
     def test_has_mine(self):
         self.assertTrue(self.MineBoard.hasMine(0, 0))
@@ -66,7 +69,7 @@ class MyTestCase(unittest.TestCase):
         self.MineBoard.subAttempt()
         self.assertEqual(current-1, self.MineBoard.getAttemptsRemaining())
 
-
+    def test_get_squares_uncovered
 
 if __name__ == '__main__':
     unittest.main()
